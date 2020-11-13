@@ -17,4 +17,4 @@
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
 name = "discretizer"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
