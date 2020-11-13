@@ -16,12 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
-import sys
+import os, sys
 import setuptools
+import subprocess
+
 from setuptools.command.build_ext import build_ext
 from distutils.core import Extension
 
 import discretizer
+
+
+CGAL_LIBRARY = "CGAL"
 
 
 ###############################################################################
@@ -76,6 +81,34 @@ def cpp_flag(compiler):
                            'is needed!')
 
 
+def has_libs(compiler, libraries):
+    """Check if C/C++ library is available on the system and can be used
+    for linking.
+    """
+    import tempfile
+    with tempfile.NamedTemporaryFile('w', suffix='.cpp') as f:
+        f.write('int main (int argc, char **argv) { return 0; }')
+
+        objects = compiler.compile([f.name])
+
+        out_fname = "libtest"
+        try:
+            compiler.link(None, objects, out_fname, libraries=libraries)
+        except setuptools.distutils.errors.LinkError:
+            return False
+
+        if os.path.isfile(out_fname):
+            os.remove(out_fname)
+
+    return True
+
+
+def has_cgal_lib(compiler):
+    """ Check if CGAL library is present
+    """
+    return has_libs(compiler, [CGAL_LIBRARY])
+
+
 class BuildExt(build_ext):
     """A custom build extension for adding compiler-specific options."""
     c_opts = {
@@ -98,6 +131,12 @@ class BuildExt(build_ext):
             opts.append('/DVERSION_INFO=\\"%s\\"' % self.distribution.get_version())
         for ext in self.extensions:
             ext.extra_compile_args = opts
+
+            # If CGAL is not available as shared object (e.g. on Ubuntu 20.04),
+            # compile without and rely on headers
+            if CGAL_LIBRARY in ext.libraries and not has_cgal_lib(self.compiler):
+                ext.libraries.remove(CGAL_LIBRARY)
+
         build_ext.build_extensions(self)
 #
 #
@@ -107,7 +146,7 @@ class BuildExt(build_ext):
 ext_minball = Extension('discretizer.minball',
                     sources=['ext/minball/minball.cpp'],
                     depends=['ext/minball/minball.hpp'],
-                    libraries=['CGAL'],
+                    libraries=[CGAL_LIBRARY],
                     include_dirs=[
                         'ext/minball',
                         get_pybind_include(),
