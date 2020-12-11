@@ -16,38 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
-import numpy as np
-
-from . import minball
+import discretizer.minball as minball
 from .geometrical_objects import *
 from .linalg import *
 
+
 class Tunnel:
-
-    def load_from_file(self, filename):
-        self.t = []
-        infile = open(filename)
-
-        for line in infile.readlines():
-            words = line.split()
-            #print words
-            if len(words) > 0 and words[0] == "ATOM":
-                center = np.array([float(words[6]), float(words[7]), float(words[8])])
-                radius = float(words[9])
-                self.t.append(Sphere(center, radius));
-            # else:
-                # print "Unexpected data: " + line
-
-        infile.close()
-        self.check_requirements()
-        print("Tunnel readed (" + str(len(self.t)) + " spheres).")
+    def __init__(self, spheres):
+        self.spheres = spheres
+        check_spheres(spheres)
 
     def get_neighbors(self, sphere_idx):
         first = None
         last  = None
 
-        for i, s in enumerate(self.t):
-            if (self.t[sphere_idx].intersect_ball(s)):
+        for i, s in enumerate(self.spheres):
+            if (self.spheres[sphere_idx].intersect_ball(s)):
                 if first == None:
                     first = i
                     last  = i
@@ -59,10 +43,10 @@ class Tunnel:
     # Return all spheres containing given point
     def get_all_containing_point(self, point):
         spheres = []
-        for s in self.t:
+        for s in self.spheres:
             if s.ball_contains(point):
                 spheres.append(s)
-        return spheres;
+        return spheres
 
     def get_all_intersecting_disk(self, plane, center):
         # print "Containing center %d" % len(self.get_all_containing_point(center))
@@ -74,7 +58,7 @@ class Tunnel:
 
         while len(inter_circs) != circles_count:
             circles_count = len(inter_circs)
-            for s1 in self.t:
+            for s1 in self.spheres:
                 c1 = plane.intersection_sphere(s1)
                 if c1 is None:
                     continue
@@ -84,12 +68,6 @@ class Tunnel:
                         inter_circs.add(c1)
                         break
         return inters
-
-    def check_requirements(self):
-        for i, s1 in enumerate(self.t):
-            for s2 in self.t[i+1:]:
-                assert(not s1.contains_sphere(s2))
-                assert(not s2.contains_sphere(s1))
 
     def fit_disk(self, normal, center):
         disk_plane  = Plane(center, normal)
@@ -161,3 +139,10 @@ class Tunnel:
             best_disk.radius))
         assert np.dot(best_disk.normal, init_normal) > 0.
         return best_disk
+
+
+def check_spheres(spheres):
+    for i, s1 in enumerate(spheres):
+        for s2 in spheres[i+1:]:
+            assert(not s1.contains_sphere(s2))
+            assert(not s2.contains_sphere(s1))

@@ -16,15 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
-import math
-import numpy as np
-from decimal import *
-
 from .geometrical_objects import *
 from .linalg import *
-from .tunnel import Tunnel
-from .minimal_enclosing import make_circle
 from .tunnel_curve import TunnelCurve
+import discretizer.minball as minball
 
 
 class DigOpts:
@@ -36,7 +31,7 @@ class DigOpts:
         self.threads = threads
 
 def dig_tunnel(tunnel, opts):
-    centers = [s.center for s in tunnel.t]
+    centers = [s.center for s in tunnel.spheres]
     normals = [normalize(centers[i + 1] - centers[i]) \
                for i in range(len(centers) - 1)]
     curve = TunnelCurve(tunnel, 6., opts)
@@ -46,8 +41,8 @@ def dig_tunnel(tunnel, opts):
 
 
     # Calculate disks position
-    for i, __ in enumerate(tunnel.t):
-        if i == len(tunnel.t) - 1:
+    for i, __ in enumerate(tunnel.spheres):
+        if i == len(tunnel.spheres) - 1:
             break
 
         print("Processing ball NO. %d" % i)
