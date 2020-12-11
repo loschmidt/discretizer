@@ -20,11 +20,11 @@ import math
 import numpy as np
 from decimal import *
 
-from discretizer.geometrical_objects import *
-from discretizer.linalg import *
-from discretizer.tunnel import Tunnel
-from discretizer.minimal_enclosing import make_circle
-from discretizer.tunnel_curve import TunnelCurve
+from .geometrical_objects import *
+from .linalg import *
+from .tunnel import Tunnel
+from .minimal_enclosing import make_circle
+from .tunnel_curve import TunnelCurve
 
 
 class DigOpts:

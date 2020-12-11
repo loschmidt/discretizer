@@ -21,8 +21,8 @@ import numpy as np
 import json
 import os
 
-from discretizer.linalg import *
-from discretizer.geometrical_objects import Segment
+from .linalg import *
+from .geometrical_objects import Segment
 
 class TunnelCurve:
     def __init__(self, tunnel, delta, opts):

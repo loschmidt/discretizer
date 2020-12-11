@@ -18,9 +18,9 @@
 
 import numpy as np
 
-import discretizer.minball as minball
-from discretizer.geometrical_objects import *
-from discretizer.linalg import *
+from . import minball
+from .geometrical_objects import *
+from .linalg import *
 
 class Tunnel:
 
