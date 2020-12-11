@@ -11,7 +11,7 @@ def load_tunnel_from_pdb(path: str) -> Tunnel:
         for line in file:
             words = line.split()
             if words and words[0] == "ATOM":
-                center = np.array([float(words[6]), float(words[7]), float(words[8])])
+                center = np.array([float(w) for w in words[6:9]])
                 radius = float(words[9])
                 spheres.append(Sphere(center, radius))
 
