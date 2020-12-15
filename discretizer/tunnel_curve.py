@@ -16,18 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
-from multiprocessing import Process, Queue, cpu_count
-import numpy as np
+from multiprocessing import Process, Queue
 import json
 import os
 
-from discretizer.linalg import *
-from discretizer.geometrical_objects import Segment
+from .linalg import *
+from .geometrical_objects import Segment
 
 class TunnelCurve:
     def __init__(self, tunnel, delta, opts):
         self.opts = opts
-        self.centers = [s.center for s in tunnel.t]
+        self.centers = [s.center for s in tunnel.spheres]
         self.dirs = []
         self.delta = delta
         dump_file = "/tmp/" + opts.filename.replace("/", "") + ".json"

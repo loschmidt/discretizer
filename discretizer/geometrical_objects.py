@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
-from discretizer.linalg import *
+from .linalg import *
 
 class Disk:
 
