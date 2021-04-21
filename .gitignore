@@ -1,5 +1,6 @@
 __pycache__/
-build/
-dist/
+/build/
+/dist/
 .pybuild/
+/tmp/
 discretizer.egg-info

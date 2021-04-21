@@ -22,12 +22,10 @@ import subprocess
 
 from setuptools.command.build_ext import build_ext
 from distutils.core import Extension
-
-import discretizer
+from distutils.util import convert_path
 
 
 CGAL_LIBRARY = "CGAL"
-
 
 ###############################################################################
 #
@@ -142,6 +140,10 @@ class BuildExt(build_ext):
 #
 ###############################################################################
 
+main_ns = {}
+ver_path = convert_path('discretizer/__init__.py')
+with open(ver_path) as ver_file:
+    exec(ver_file.read(), main_ns)
 
 ext_minball = Extension('discretizer.minball',
                     sources=['ext/minball/minball.cpp'],
@@ -159,7 +161,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="discretizer",
-    version=discretizer.__version__,
+    version=main_ns['__version__'],
     author="Jan Plhak",
     author_email="408420@mail.muni.cz",
     description="Tool used to transform tunnel in protein to a sequence of disks",
