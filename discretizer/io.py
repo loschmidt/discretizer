@@ -32,5 +32,5 @@ def load_tunnel_from_pdb(path: str) -> Tunnel:
                 radius = float(words[9])
                 spheres.append(Sphere(center, radius))
 
-        logging.info(f"Tunnel loaded ({len(spheres)} spheres).")
+        logging.info("Tunnel loaded (%d spheres).", len(spheres))
     return Tunnel(spheres)
