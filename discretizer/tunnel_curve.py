@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Discretizer.  If not, see <https://www.gnu.org/licenses/>.
 
-from multiprocessing import Process, Queue, cpu_count
+from multiprocessing import Process, Queue
 import numpy as np
 import json
 import os
@@ -27,7 +27,7 @@ from discretizer.geometrical_objects import Segment
 class TunnelCurve:
     def __init__(self, tunnel, delta, opts):
         self.opts = opts
-        self.centers = [s.center for s in tunnel.t]
+        self.centers = [s.center for s in tunnel.spheres]
         self.dirs = []
         self.delta = delta
         dump_file = "/tmp/" + opts.filename.replace("/", "") + ".json"
